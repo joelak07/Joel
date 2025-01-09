@@ -1,27 +1,62 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
+import React from "react";
+import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 
 export default function Home() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home screen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.top}>
+        <Text style={styles.expen}>Expenses</Text>
+        <View style={styles.total}>
+          <Text style={styles.totalText} onPress={() => console.log("Text Pressed")}>
+            Rs 53183
+          </Text>
+        </View>
+      </View>
+      <View style={styles.balance}>
+          <Text style={styles.baltext}>Balance</Text>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#0f0f0f", // Set background color
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
-  text: {
-    color: '#fff',
+  top: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 42.5,
   },
-  button: {
+  total: {
+    backgroundColor: "#FFF4B7",
+    padding:10,
+    borderRadius: 10,
+    width: 150,
+  },
+  totalText: {
     fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
+    color: "#000B58",
+    fontWeight: "bold",
+    textAlign:"center",
+  },
+  expen: {
+    fontSize: 34,
+    fontWeight: "bold",
+    color: "#FFF4B7",
+    width: 150,
+  },
+  balance:{
+    
+  },
+  baltext:{
+    fontSize:20,
+    marginTop:15,
+    color: "white",
   },
 });
