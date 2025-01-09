@@ -1,11 +1,32 @@
 import React from "react";
-import { SafeAreaView, Text, StyleSheet, StatusBar, View } from "react-native";
+import { SafeAreaView, Text, StyleSheet, StatusBar } from "react-native";
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
+import { useFonts } from "expo-font";
 
 export default function Index() {
+  const [fontsLoaded] = useFonts({
+    "PoetsenOne-Regular": require("../assets/fonts/PoetsenOne-Regular.ttf"), 
+  });
+
+  const scale = useSharedValue(1); // Initially, text is at normal scale
+
+  // Animate the scale of the text
+  React.useEffect(() => {
+    scale.value = withTiming(1.2, { duration: 500, easing: Easing.ease });
+  }, []);
+
+  const style = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" hidden={true} /> 
-      <Text style={styles.text}>Joel</Text>
+      <Animated.Text style={[styles.text, { fontFamily: "PoetsenOne-Regular" }, style]}>
+        Joel
+      </Animated.Text>
     </SafeAreaView>
   );
 }
@@ -16,14 +37,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center", 
     backgroundColor: "#000B58",
-    marginTop: 0, 
-    paddingTop: 0, 
-    paddingBottom: 0, 
-    paddingLeft: 0,
-    paddingRight: 0,
   },
   text: {
-    fontSize: 40,
+    fontSize: 80,
     color: "#FFF4B7", 
   },
 });
