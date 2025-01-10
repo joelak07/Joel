@@ -1,14 +1,20 @@
 import React from "react";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import PieChart from "react-native-pie-chart";
 
 export default function Home() {
   const widthAndHeight = 250;
   const data = [
-    { value: 430, color: "#fbd203", label: { text: 'A', fontWeight: 'bold' } },
-    { value: 50, color: "#ffb300", label: { text: 'A', fontWeight: 'bold' } },
-    { value: 185, color: "#ff9100" , label: { text: 'A', fontWeight: 'bold' }},
-    { value: 123, color: "#ff6c00" , label: { text: 'A', fontWeight: 'bold' }},
+    { value: 430, color: "#fbd203", label: { text: "A", fontWeight: "bold" } },
+    { value: 50, color: "#ffb300", label: { text: "A", fontWeight: "bold" } },
+    { value: 185, color: "#ff9100", label: { text: "A", fontWeight: "bold" } },
+    { value: 123, color: "#ff6c00", label: { text: "A", fontWeight: "bold" } },
   ];
   return (
     <SafeAreaView style={styles.container}>
@@ -29,11 +35,12 @@ export default function Home() {
         <Text style={styles.cash}>Rs 53183</Text>
       </View>
       <View style={styles.piechart}>
-      <PieChart
-          widthAndHeight={widthAndHeight}
-          series={data}
-        />
+        <PieChart widthAndHeight={widthAndHeight} series={data} />
       </View>
+      <TouchableOpacity style={styles.button} onPress={()=>console.log("Button Pressed")}>
+        <Text style={styles.buttonText}>Add New Record</Text>
+      </TouchableOpacity>
+      <Text style={styles.transactions}>Transactions</Text>
     </SafeAreaView>
   );
 }
@@ -41,7 +48,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2e2e2e", // Set background color
+    backgroundColor: "#2e2e2e", 
     paddingTop: 50,
     paddingHorizontal: 20,
   },
@@ -76,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 10,
   },
-  upi:{
+  upi: {
     backgroundColor: "#FFF4B7",
     padding: 15,
     borderRadius: 10,
@@ -84,7 +91,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     textAlign: "center",
   },
-  cash:{
+  cash: {
     backgroundColor: "#FFF4B7",
     padding: 15,
     borderRadius: 10,
@@ -105,5 +112,21 @@ const styles = StyleSheet.create({
     height: 300,
     marginTop: 20,
     alignItems: "center",
+  },
+  button:{
+    backgroundColor: "#FFF4B7",
+    padding: 12,
+    borderRadius: 10,
+    width: "100%",
+    marginTop: 20,
+    alignItems: "center",
+  },
+  buttonText:{
+    fontSize: 20,
+  },
+  transactions:{
+    color: "white",
+    fontSize: 15,
+    marginTop: 15,
   },
 });
