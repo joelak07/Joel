@@ -69,7 +69,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2e2e2e", 
+    backgroundColor: "#FFF0DC", 
     paddingTop: 50,
     paddingHorizontal: 20,
   },
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   expen: {
     fontSize: 34,
     fontWeight: "bold",
-    color: "#FFF4B7",
+    color: "#543A14",
     width: 150,
   },
   balance: {
@@ -154,6 +154,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(116, 111, 111, 0.7)", // Semi-transparent background
+    backgroundColor: "rgba(220, 162, 26, 0.9)", // Semi-transparent background
   },
 });
