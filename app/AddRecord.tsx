@@ -82,6 +82,8 @@ export default function AddRecord() {
       paymentMode: selectedMode,
       category,
       note,
+      time: new Date().toLocaleTimeString(),
+      date: new Date().toLocaleDateString(),
     };
 
     try {
@@ -98,6 +100,7 @@ export default function AddRecord() {
       setSelectedMode(null);
       setCategory("Food");
       setNote("");
+      console.log(records);
     } catch (error) {
       Alert.alert("Error", "Failed to save the record.");
       console.error(error);

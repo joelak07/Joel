@@ -23,6 +23,13 @@ export default function RootLayout() {
           headerShown: false, 
         }}
       />
+      <Stack.Screen
+        name="Transactions"
+        options={{
+          title: 'Transactions',
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

@@ -6,9 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
+  ScrollView,
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import AddRecord from "./AddRecord";
+import NavBarExp from "./NavBarExp";
+import Transactions from "./Transactions";
+
 
 export default function Home() {
   const [isAddRecordVisible, setIsAddRecordVisible] = useState(false);
@@ -27,41 +31,48 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.top}>
-        <Text style={styles.expen}>Expenses</Text>
-        <View style={styles.total}>
-          <Text
-            style={styles.totalText}
-            onPress={() => console.log("Text Pressed")}
-          >
-            Rs 53183
-          </Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.top}>
+          <Text style={styles.expen}>Expenses</Text>
+          <View style={styles.total}>
+            <Text
+              style={styles.totalText}
+              onPress={() => console.log("Text Pressed")}
+            >
+              Rs 53183
+            </Text>
+          </View>
         </View>
-      </View>
-      <Text style={styles.baltext}>Balance</Text>
-      <View style={styles.balance}>
-        <Text style={styles.upi}>Rs 53183</Text>
-        <Text style={styles.cash}>Rs 53183</Text>
-      </View>
-      <View style={styles.piechart}>
-        <PieChart widthAndHeight={widthAndHeight} series={data} />
-      </View>
-      <TouchableOpacity style={styles.button} onPress={toggleAddRecord}>
-        <Text style={styles.buttonText}>Add New Record</Text>
-      </TouchableOpacity>
-      <Text style={styles.transactions}>Transactions</Text>
+        <Text style={styles.baltext}>Balance</Text>
+        <View style={styles.balance}>
+          <Text style={styles.upi}>Rs 53183</Text>
+          <Text style={styles.cash}>Rs 53183</Text>
+        </View>
+        <View style={styles.piechart}>
+          <PieChart widthAndHeight={widthAndHeight} series={data} />
+        </View>
+        <TouchableOpacity style={styles.button} onPress={toggleAddRecord}>
+          <Text style={styles.buttonText}>Add New Record</Text>
+        </TouchableOpacity>
+        <Text style={styles.transactions}>Transactions</Text>
 
-      {/* Modal for AddRecord */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isAddRecordVisible}
-        onRequestClose={toggleAddRecord}
-      >
-        <View style={styles.modalContainer}>
-          <AddRecord onClose={toggleAddRecord} />
-        </View>
-      </Modal>
+        {/* Modal for AddRecord */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isAddRecordVisible}
+          onRequestClose={toggleAddRecord}
+        >
+          <View style={styles.modalContainer}>
+            <AddRecord onClose={toggleAddRecord} />
+          </View>
+        </Modal>
+      </ScrollView>
+
+      {/* Fixed NavBar */}
+      <View style={styles.navBar}>
+        <NavBarExp />
+      </View>
     </SafeAreaView>
   );
 }
@@ -72,6 +83,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF0DC", 
     paddingTop: 50,
     paddingHorizontal: 20,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
   },
   top: {
     display: "flex",
@@ -155,5 +169,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(220, 162, 26, 0.9)", // Semi-transparent background
+  },
+  navBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#f8f9fa",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+    alignItems: "center",
   },
 });
