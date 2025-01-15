@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TransactionDot from "./TransactionDot";
+import NavBarExp from "./NavBarExp";
 
 export default function Transactions() {
   const [records, setRecords] = useState([]);
@@ -51,6 +52,9 @@ export default function Transactions() {
           <TransactionDot key={index} {...record} />
         ))}
       </ScrollView>
+      <View style={styles.navBar}>
+              <NavBarExp />
+            </View>
     </SafeAreaView>
   );
 }
@@ -68,5 +72,16 @@ const styles = StyleSheet.create({
     color: "#333", // Dark gray
     textAlign: "left",
     marginVertical: 20,
+  },
+  navBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#f8f9fa",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+    alignItems: "center",
   },
 });

@@ -28,8 +28,9 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" hidden={true} />
       <Animated.Text style={[styles.text, { fontFamily: "PoetsenOne-Regular" }, style]}>
-        Joel
+        PennyWise
       </Animated.Text>
+      <Text style={styles.small}>"Penny wise, wisdom bound"</Text>
     </SafeAreaView>
   );
 }
@@ -42,7 +43,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#2e2e2e",
   },
   text: {
-    fontSize: 80,
+    fontSize: 30,
     color: "#FFF4B7",
   },
+  small:{
+    fontSize: 15,
+    color: "#FFF",
+    position: "absolute",
+    bottom: 90,
+  }
 });

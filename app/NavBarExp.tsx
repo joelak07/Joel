@@ -10,9 +10,13 @@ export default function NavBarExp() {
     navigation.navigate('Transactions'); // Navigate to the 'Transaction' screen
   };
 
+  const handleHomePress = () => {
+    navigation.navigate('home'); // Navigate to the 'Home' screen
+  };
+
   return (
     <View style={styles.navBar}>
-      <TouchableOpacity style={styles.navButton}>
+      <TouchableOpacity style={styles.navButton} onPress={handleHomePress}>
         <Ionicons name="home-outline" size={24} color="#000" />
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>

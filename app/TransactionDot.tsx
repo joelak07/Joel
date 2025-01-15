@@ -1,5 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons"; // Import from expo/vector-icons
+
+interface TransactionDotProps {
+  record: number;
+  transactionType: string;
+  paymentMode: string;
+  category: string;
+  note: string;
+  time: string;
+  date: string;
+}
 
 export default function TransactionDot({
   record,
@@ -9,18 +21,54 @@ export default function TransactionDot({
   note,
   time,
   date,
-}) {
+}: TransactionDotProps) {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  // Determine the background color based on transactionType
-  const backgroundColor = transactionType === "Credit" ? "lightgreen" : "tomato"; // Green for credit, Red for debit
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              // Retrieve all records from AsyncStorage
+              const records = await AsyncStorage.getItem("records");
+              const parsedRecords = records ? JSON.parse(records) : [];
+  
+              // Filter out the record matching the current date and time
+              const updatedRecords = parsedRecords.filter(
+                (record) => !(record.date === date && record.time === time)
+              );
+  
+              // Save the updated records back to AsyncStorage
+              await AsyncStorage.setItem("records", JSON.stringify(updatedRecords));
+  
+              console.log("Transaction deleted successfully");
+            } catch (error) {
+              console.error("Error deleting transaction:", error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const backgroundColor =
+    transactionType === "Credit" ? "lightgreen" : "tomato"; // Green for credit, Red for debit
 
   return (
-    <TouchableOpacity onPress={toggleDetails} style={[styles.container, { backgroundColor }]}>
+    <TouchableOpacity
+      onPress={toggleDetails}
+      style={[styles.container, { backgroundColor }]}
+    >
       <View>
         <Text style={styles.amount}>₹{record}</Text>
         {showDetails && (
@@ -35,7 +83,12 @@ export default function TransactionDot({
                 <Text style={styles.detailText}>Date: {date}</Text>
               </View>
             </View>
-            <Text style={styles.detailText}>Note: {note}</Text>
+            <View style={styles.row}>
+              <Text style={styles.detailText}>Note: {note}</Text>
+              <TouchableOpacity onPress={handleDelete}>
+                <MaterialIcons name="delete" size={24} color="gray"/>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>
@@ -79,5 +132,12 @@ const styles = StyleSheet.create({
   content: {
     width: "50%",
     marginRight: 15,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    marginRight: 1,
   },
 });
