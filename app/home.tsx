@@ -33,7 +33,7 @@ export default function Home() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.top}>
-          <Text style={styles.expen}>Expenses</Text>
+          <Text style={styles.expen}>PennyWise</Text>
           <View style={styles.total}>
             <Text
               style={styles.totalText}
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   expen: {
-    fontSize: 34,
+    fontSize: 29,
     fontWeight: "bold",
     color: "#543A14",
     width: 150,

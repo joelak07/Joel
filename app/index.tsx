@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, Text, StyleSheet, StatusBar } from "react-native";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
 
@@ -10,8 +11,26 @@ export default function Index() {
   });
 
   const scale = useSharedValue(1); 
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
+
+  // Function to check and set default categories
+  const initializeCategories = async () => {
+    try {
+      const categories = await AsyncStorage.getItem("categories");
+      if (!categories) {
+        const defaultCategories = ["Food", "Utilities", "Grocery", "Recharge", "Fees"];
+        await AsyncStorage.setItem("categories", JSON.stringify(defaultCategories));
+        console.log("Default categories set");
+      } else {
+        console.log("Categories already exist:", JSON.parse(categories));
+      }
+    } catch (error) {
+      console.error("Error initializing categories:", error);
+    }
+  };
+
   React.useEffect(() => {
+    initializeCategories(); // Check and initialize categories
     scale.value = withTiming(1.2, { duration: 500, easing: Easing.ease });
     setTimeout(() => {
       navigation.navigate("home"); 
@@ -46,10 +65,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#FFF4B7",
   },
-  small:{
+  small: {
     fontSize: 15,
     color: "#FFF",
     position: "absolute",
     bottom: 90,
-  }
+  },
 });

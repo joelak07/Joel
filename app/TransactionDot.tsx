@@ -42,15 +42,18 @@ export default function TransactionDot({
               // Retrieve all records from AsyncStorage
               const records = await AsyncStorage.getItem("records");
               const parsedRecords = records ? JSON.parse(records) : [];
-  
+
               // Filter out the record matching the current date and time
               const updatedRecords = parsedRecords.filter(
                 (record) => !(record.date === date && record.time === time)
               );
-  
+
               // Save the updated records back to AsyncStorage
-              await AsyncStorage.setItem("records", JSON.stringify(updatedRecords));
-  
+              await AsyncStorage.setItem(
+                "records",
+                JSON.stringify(updatedRecords)
+              );
+
               console.log("Transaction deleted successfully");
             } catch (error) {
               console.error("Error deleting transaction:", error);
@@ -70,23 +73,25 @@ export default function TransactionDot({
       style={[styles.container, { backgroundColor }]}
     >
       <View>
-        <Text style={styles.amount}>₹{record}</Text>
+        <View style={styles.format}>
+          <Text style={styles.amount}>{category}</Text>
+          <Text style={styles.amount}>₹{record}</Text>
+        </View>
+        <Text style={styles.date}>{date}</Text>
         {showDetails && (
           <View style={styles.onpress}>
             <View style={styles.format}>
               <View style={styles.content}>
                 <Text style={styles.detailText}>{paymentMode}</Text>
-                <Text style={styles.detailText}>{category}</Text>
               </View>
               <View style={styles.content}>
-                <Text style={styles.detailText}>Time: {time}</Text>
-                <Text style={styles.detailText}>Date: {date}</Text>
+                <Text style={styles.time}>Time: {time.slice(0, 5)}</Text>
               </View>
             </View>
             <View style={styles.row}>
               <Text style={styles.detailText}>Note: {note}</Text>
               <TouchableOpacity onPress={handleDelete}>
-                <MaterialIcons name="delete" size={24} color="gray"/>
+                <MaterialIcons name="delete" size={24} color="gray" />
               </TouchableOpacity>
             </View>
           </View>
@@ -131,13 +136,21 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "50%",
-    marginRight: 15,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
     marginRight: 1,
   },
+  date:{
+    fontSize: 16,
+    color: "#333",
+    textAlign: "left",
+  },
+  time:{
+    textAlign: "right",
+    marginRight: 5,
+  }
 });

@@ -15,9 +15,38 @@ export default function AddRecord() {
   const [record, setRecord] = useState("");
   const [selectedTrans, setSelectedTrans] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
-  const [category, setCategory] = useState("Food");
+  const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  const fetchCategories = async () => {
+    try {
+      const storedCategories = await AsyncStorage.getItem("categories");
+      if (storedCategories) {
+        setCategories(JSON.parse(storedCategories));
+      } else {
+        const defaultCategories = [
+          "Food",
+          "Utilities",
+          "Grocery",
+          "Recharge",
+          "Fees",
+        ];
+        await AsyncStorage.setItem(
+          "categories",
+          JSON.stringify(defaultCategories)
+        );
+        setCategories(defaultCategories);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories(); // Fetch categories on component mount
+  }, []);
 
   // Detect keyboard visibility
   useEffect(() => {
@@ -53,22 +82,22 @@ export default function AddRecord() {
   };
 
   const getFirstRecord = async () => {
-  try {
-    const recordsJSON = await AsyncStorage.getItem('records'); // Retrieve stored data
-    if (recordsJSON) {
-      const records = JSON.parse(recordsJSON); // Parse the JSON string into an array
-      if (records.length > 0) {
-        console.log(records[0]); // Log the first record
+    try {
+      const recordsJSON = await AsyncStorage.getItem("records"); // Retrieve stored data
+      if (recordsJSON) {
+        const records = JSON.parse(recordsJSON); // Parse the JSON string into an array
+        if (records.length > 0) {
+          console.log(records[0]); // Log the first record
+        } else {
+          console.log("No records available.");
+        }
       } else {
-        console.log('No records available.');
+        console.log("No data found in AsyncStorage.");
       }
-    } else {
-      console.log('No data found in AsyncStorage.');
+    } catch (error) {
+      console.error("Error retrieving records from AsyncStorage:", error);
     }
-  } catch (error) {
-    console.error('Error retrieving records from AsyncStorage:', error);
-  }
-};
+  };
 
   const handleSubmit = async () => {
     if (!record || !selectedTrans || !selectedMode) {
@@ -83,7 +112,10 @@ export default function AddRecord() {
       category,
       note,
       time: new Date().toLocaleTimeString(),
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+      }),
     };
 
     try {
@@ -93,7 +125,7 @@ export default function AddRecord() {
 
       await AsyncStorage.setItem("records", JSON.stringify(records));
       Alert.alert("Success", "Record saved successfully!");
-      
+
       // Clear fields
       setRecord("");
       setSelectedTrans(null);
@@ -170,9 +202,13 @@ export default function AddRecord() {
             onValueChange={(itemValue) => setCategory(itemValue)}
             style={styles.picker}
           >
-            <Picker.Item label="Food" value="food" />
-            <Picker.Item label="Grocery" value="grocery" />
-            <Picker.Item label="Utilities" value="utilities" />
+            {categories.map((item, index) => (
+              <Picker.Item
+                key={index}
+                label={item}
+                value={item.toLowerCase()}
+              />
+            ))}
           </Picker>
         </View>
         <TouchableOpacity style={styles.newCategoryButton}>
