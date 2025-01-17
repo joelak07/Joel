@@ -15,24 +15,28 @@ export default function Transactions() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const recordsJSON = await AsyncStorage.getItem("records");
-        if (recordsJSON) {
-          setRecords(JSON.parse(recordsJSON)); // Parse the JSON string
-        } else {
-          setRecords([]); // No records found
-        }
-      } catch (error) {
-        console.error("Error fetching records:", error);
-      } finally {
-        setLoading(false); // Stop loading spinner
+  const fetchRecords = async () => {
+    try {
+      const recordsJSON = await AsyncStorage.getItem("records");
+      if (recordsJSON) {
+        setRecords(JSON.parse(recordsJSON)); // Parse the JSON string
+      } else {
+        setRecords([]); // No records found
       }
-    };
+    } catch (error) {
+      console.error("Error fetching records:", error);
+    } finally {
+      setLoading(false); // Stop loading spinner
+    }
+  };
 
+  useEffect(() => {
     fetchRecords();
   }, []);
+
+  const handleDelete = () => {
+    fetchRecords(); // Refresh records after deletion
+  };
 
   if (loading) {
     return (
@@ -49,12 +53,12 @@ export default function Transactions() {
       </View>
       <ScrollView>
         {records.map((record, index) => (
-          <TransactionDot key={index} {...record} />
+          <TransactionDot key={index} {...record} onDelete={handleDelete} />
         ))}
       </ScrollView>
       <View style={styles.navBar}>
-              <NavBarExp />
-            </View>
+        <NavBarExp />
+      </View>
     </SafeAreaView>
   );
 }

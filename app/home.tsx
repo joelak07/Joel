@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,14 +8,14 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import PieChart from "react-native-pie-chart";
 import AddRecord from "./AddRecord";
 import NavBarExp from "./NavBarExp";
-import Transactions from "./Transactions";
-
 
 export default function Home() {
   const [isAddRecordVisible, setIsAddRecordVisible] = useState(false);
+  const [totalExpense, setTotalExpense] = useState(0);
 
   const widthAndHeight = 250;
   const data = [
@@ -24,6 +24,22 @@ export default function Home() {
     { value: 185, color: "#ff9100", label: { text: "A", fontWeight: "bold" } },
     { value: 123, color: "#ff6c00", label: { text: "A", fontWeight: "bold" } },
   ];
+
+  // Fetch total expense from AsyncStorage
+  useEffect(() => {
+    const fetchExpense = async () => {
+      try {
+        const expenseJSON = await AsyncStorage.getItem("expense");
+        if (expenseJSON) {
+          setTotalExpense(JSON.parse(expenseJSON)); // Parse and set the expense value
+        }
+      } catch (error) {
+        console.error("Error fetching expense:", error);
+      }
+    };
+
+    fetchExpense();
+  }, []);
 
   const toggleAddRecord = () => {
     setIsAddRecordVisible(!isAddRecordVisible);
@@ -39,14 +55,14 @@ export default function Home() {
               style={styles.totalText}
               onPress={() => console.log("Text Pressed")}
             >
-              Rs 53183
+              Rs {totalExpense} {/* Display fetched total expense */}
             </Text>
           </View>
         </View>
         <Text style={styles.baltext}>Balance</Text>
         <View style={styles.balance}>
-          <Text style={styles.upi}>Rs 53183</Text>
-          <Text style={styles.cash}>Rs 53183</Text>
+          <Text style={styles.upi}>Rs {totalExpense}</Text>
+          <Text style={styles.cash}>Rs {totalExpense}</Text>
         </View>
         <View style={styles.piechart}>
           <PieChart widthAndHeight={widthAndHeight} series={data} />
@@ -58,7 +74,7 @@ export default function Home() {
 
         {/* Modal for AddRecord */}
         <Modal
-          animationType="fade"
+          animationType="slide"
           transparent={true}
           visible={isAddRecordVisible}
           onRequestClose={toggleAddRecord}
@@ -98,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF4B7",
     padding: 10,
     borderRadius: 10,
-    width: 150,
+    width: 'auto',
   },
   totalText: {
     fontSize: 20,
@@ -166,9 +182,10 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(220, 162, 26, 0.9)", // Semi-transparent background
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(255, 240, 220, 0.8)",
+    
+     
   },
   navBar: {
     position: "absolute",

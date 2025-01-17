@@ -15,7 +15,7 @@ export default function AddRecord() {
   const [record, setRecord] = useState("");
   const [selectedTrans, setSelectedTrans] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Food");
   const [note, setNote] = useState("");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -45,10 +45,10 @@ export default function AddRecord() {
   };
 
   useEffect(() => {
-    fetchCategories(); // Fetch categories on component mount
+    fetchCategories(); 
   }, []);
 
-  // Detect keyboard visibility
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -126,7 +126,11 @@ export default function AddRecord() {
       await AsyncStorage.setItem("records", JSON.stringify(records));
       Alert.alert("Success", "Record saved successfully!");
 
-      // Clear fields
+      const expense = await AsyncStorage.getItem("expense");
+      const totalExpense = expense ? JSON.parse(expense) : 0;
+      const newExpense = selectedTrans === "Debit" ? totalExpense + parseInt(record) : totalExpense;
+      await AsyncStorage.setItem("expense", JSON.stringify(newExpense));
+
       setRecord("");
       setSelectedTrans(null);
       setSelectedMode(null);
@@ -141,7 +145,7 @@ export default function AddRecord() {
 
   return (
     <View
-      style={[styles.container, { height: keyboardVisible ? "90%" : "52%" }]}
+      style={[styles.container, { height: keyboardVisible ? "90%" : "90%" }]}
     >
       <Text style={styles.addrectext}>Add Record</Text>
       <TextInput
@@ -206,7 +210,7 @@ export default function AddRecord() {
               <Picker.Item
                 key={index}
                 label={item}
-                value={item.toLowerCase()}
+                value={item}
               />
             ))}
           </Picker>
@@ -233,9 +237,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#2e2e2e",
     alignItems: "center",
-    margin: 20,
-    width: "90%",
-    borderRadius: 20,
+    margin: 0,
+    width: "100%",
     padding: 20,
   },
   addrectext: {

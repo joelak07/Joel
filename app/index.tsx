@@ -29,8 +29,24 @@ export default function Index() {
     }
   };
 
+  const initializeExpense = async () => {
+    try {
+      const expense = await AsyncStorage.getItem("expense");
+      if (!expense) {
+        const defaultexp = 0;
+        await AsyncStorage.setItem("expense", JSON.stringify(defaultexp));
+        console.log("Default Expense set");
+      } else {
+        console.log("Expense already exist:", JSON.parse(expense));
+      }
+    } catch (error) {
+      console.error("Error initializing Expense:", error);
+    }
+  };
+
   React.useEffect(() => {
-    initializeCategories(); // Check and initialize categories
+    initializeCategories();
+    initializeExpense(); // Check and initialize categories
     scale.value = withTiming(1.2, { duration: 500, easing: Easing.ease });
     setTimeout(() => {
       navigation.navigate("home"); 

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons"; // Import from expo/vector-icons
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface TransactionDotProps {
   record: number;
@@ -11,6 +11,7 @@ interface TransactionDotProps {
   note: string;
   time: string;
   date: string;
+  onDelete: () => void; // Callback to notify parent about deletion
 }
 
 export default function TransactionDot({
@@ -21,6 +22,7 @@ export default function TransactionDot({
   note,
   time,
   date,
+  onDelete,
 }: TransactionDotProps) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -55,6 +57,7 @@ export default function TransactionDot({
               );
 
               console.log("Transaction deleted successfully");
+              onDelete(); // Trigger parent refresh
             } catch (error) {
               console.error("Error deleting transaction:", error);
             }
@@ -144,13 +147,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginRight: 1,
   },
-  date:{
+  date: {
     fontSize: 16,
     color: "#333",
     textAlign: "left",
   },
-  time:{
+  time: {
     textAlign: "right",
     marginRight: 5,
-  }
+  },
 });
