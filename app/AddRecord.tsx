@@ -6,19 +6,26 @@ import {
   TouchableOpacity,
   Keyboard,
   Alert,
+  Modal,
+  FlatList,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
+import AddCategory from "./AddCategory";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function AddRecord() {
+export default function AddRecord({ onClose }) {
   const [record, setRecord] = useState("");
   const [selectedTrans, setSelectedTrans] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
   const [category, setCategory] = useState("Food");
   const [note, setNote] = useState("");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<
+    { emoji: string; name: string }[]
+  >([]);
+  const [isAddCategoryVisible, setIsAddCategoryVisible] = useState(false);
 
   const fetchCategories = async () => {
     try {
@@ -27,12 +34,28 @@ export default function AddRecord() {
         setCategories(JSON.parse(storedCategories));
       } else {
         const defaultCategories = [
-          "Food",
-          "Utilities",
-          "Grocery",
-          "Recharge",
-          "Fees",
+          { emoji: "🍔", name: "Food" },
+          { emoji: "💡", name: "Utilities" },
+          { emoji: "🛒", name: "Grocery" },
+          { emoji: "📱", name: "Recharge" },
+          { emoji: "🎓", name: "Fees" },
+          { emoji: "🏠", name: "Rent" },
+          { emoji: "🚕", name: "Transportation" },
+          { emoji: "🎉", name: "Entertainment" },
+          { emoji: "💊", name: "Health" },
+          { emoji: "🎁", name: "Gifts" },
+          { emoji: "🛠️", name: "Repairs" },
+          { emoji: "👕", name: "Clothing" },
+          { emoji: "✈️", name: "Travel" },
+          { emoji: "🐾", name: "Pets" },
+          { emoji: "📚", name: "Books" },
+          { emoji: "☕", name: "Café" },
+          { emoji: "💼", name: "Work" },
+          { emoji: "💰", name: "Savings" },
+          { emoji: "🎮", name: "Games" },
+          { emoji: "🔔", name: "Subscriptions" },
         ];
+
         await AsyncStorage.setItem(
           "categories",
           JSON.stringify(defaultCategories)
@@ -44,10 +67,17 @@ export default function AddRecord() {
     }
   };
 
+  const toggleAddCategory = () => {
+    setIsAddCategoryVisible(!isAddCategoryVisible);
+  };
+
   useEffect(() => {
-    fetchCategories(); 
+    fetchCategories();
   }, []);
 
+  const refetchCategories = () => {
+    fetchCategories();
+  };
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -128,7 +158,10 @@ export default function AddRecord() {
 
       const expense = await AsyncStorage.getItem("expense");
       const totalExpense = expense ? JSON.parse(expense) : 0;
-      const newExpense = selectedTrans === "Debit" ? totalExpense + parseInt(record) : totalExpense;
+      const newExpense =
+        selectedTrans === "Debit"
+          ? totalExpense + parseInt(record)
+          : totalExpense;
       await AsyncStorage.setItem("expense", JSON.stringify(newExpense));
 
       setRecord("");
@@ -136,7 +169,6 @@ export default function AddRecord() {
       setSelectedMode(null);
       setCategory("Food");
       setNote("");
-      console.log(records);
     } catch (error) {
       Alert.alert("Error", "Failed to save the record.");
       console.error(error);
@@ -147,7 +179,14 @@ export default function AddRecord() {
     <View
       style={[styles.container, { height: keyboardVisible ? "90%" : "90%" }]}
     >
-      <Text style={styles.addrectext}>Add Record</Text>
+      <View style={{ flexDirection: "row", width: "100%" }}>
+        <TouchableOpacity onPress={onClose}>
+          <Text>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </Text>
+        </TouchableOpacity>
+        <Text style={styles.addrectext}>Add Record</Text>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Enter record details"
@@ -209,13 +248,16 @@ export default function AddRecord() {
             {categories.map((item, index) => (
               <Picker.Item
                 key={index}
-                label={item}
-                value={item}
+                label={`${item.emoji} ${item.name}`}
+                value={item.name}
               />
             ))}
           </Picker>
         </View>
-        <TouchableOpacity style={styles.newCategoryButton}>
+        <TouchableOpacity
+          style={styles.newCategoryButton}
+          onPress={toggleAddCategory}
+        >
           <Text style={styles.buttonText}>New</Text>
         </TouchableOpacity>
       </View>
@@ -229,6 +271,20 @@ export default function AddRecord() {
       <TouchableOpacity style={styles.SubmitButton} onPress={handleSubmit}>
         <Text style={styles.subbuttonText}>Submit</Text>
       </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isAddCategoryVisible}
+        onRequestClose={toggleAddCategory} // Ensures the modal can close with the back button
+      >
+        <View style={styles.modalContainer}>
+          <AddCategory
+            onClose={toggleAddCategory}
+            onCategoryAdded={fetchCategories}
+            refetchCategories={refetchCategories}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -244,6 +300,8 @@ const styles = StyleSheet.create({
   addrectext: {
     color: "#fff",
     fontSize: 20,
+    textAlign: "center",
+    width: "85%",
   },
   input: {
     backgroundColor: "#fff",
@@ -325,5 +383,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "#000",
     fontSize: 13,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(255, 240, 220, 0)",
   },
 });
